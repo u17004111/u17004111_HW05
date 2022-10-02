@@ -1,0 +1,70 @@
+﻿@model u17004111_HW05.Models.ViewModels.BorrowsVM
+@{
+    string availability;
+    string color;
+    var borrowsList = Model.Borrows;
+    var latestB = borrowsList.First();
+    if (latestB.Brought == "" || latestB.Brought == null)
+    {
+        availability = " - Book Out";
+        color = "red";
+    }
+    else
+    {
+        availability = " - Book Available";
+        color = "green";
+    }
+}
+
+<div>
+    <p>
+        <h2>
+            @Model.Book <font color="@color">@availability</font>
+        </h2>
+    </p>
+    <p>
+        <h3>
+            #Borrows - @Model.Borrows.Count()
+        </h3>
+        @Html.ActionLink("View Students", "Students", new { id = Model.BookId }, new { @class = "btn btn-primary mr-0"})
+    </p>
+
+</div>
+
+<table class="table">
+    <tr>
+        <th scope="col">@Html.DisplayName("#")</th>
+        <th scope="col">@Html.DisplayName("Taken")</th>
+        <th scope="col">@Html.DisplayName("Brought")</th>
+        <th scope="col">@Html.DisplayName("Borrowed By")</th>
+    </tr>
+
+    @{
+        foreach (var item in Model.Borrows)
+        {
+            <tr>
+                <td>@Html.DisplayFor(modelItem => item.ID)</td>
+                <td>@Html.DisplayFor(modelItem => item.Taken)</td>
+
+                @if (item.Brought == "" || item.Brought == null)
+                {
+                    <td>OUT</td>
+                }
+                else
+                {
+                    <td>@Html.DisplayFor(modelItem => item.Brought)</td>
+                }
+
+                @foreach (var stud in Model.Students)
+                {
+                    if (item.StudentID == stud.ID)
+                    {
+                        <td>@Html.DisplayFor(modelstud => stud.Name) @Html.DisplayFor(modelstud => stud.Surname)</td>
+                        break;
+                    }
+                }
+            </tr>
+        }
+    }
+
+</table>

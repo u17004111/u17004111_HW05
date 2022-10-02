@@ -1,0 +1,96 @@
+﻿@model u17004111_HW05.Models.ViewModels.BooksVM
+@{
+}
+<h2>Books</h2>
+<div>
+    <form method="post">
+        <p>
+            @*Use a ZIP to tie the authorname and authorID together to allow for stepping through with singular foreach, allowing use of authorId as parameter and display of authorname.*@
+            <input type="text" name="bname" />
+            <select name="authorId">
+                <option value="0"></option>
+                @{
+                    List<String> authorNames = new List<string>();
+                    Model.Authors.ForEach(author => authorNames.Add(author.Name));
+
+                    List<int> authorIds = new List<int>();
+                    Model.Authors.ForEach(author => authorIds.Add(author.AuthorID));
+
+                    var authorDetails = authorIds.Zip(authorNames, (I, N) => new { ID = I, Name = N });
+
+                    foreach (var author in authorDetails)
+                    {
+                        <option value="@author.ID">@author.Name</option>
+                    }
+                }
+            </select>
+            <select name="typeId">
+                <option value="0"></option>
+                @{
+                    List<string> typeNames = new List<string>();
+                    Model.Types.ForEach(type => typeNames.Add(type.Name));
+
+                    List<int> typeIds = new List<int>();
+                    Model.Types.ForEach(type => typeIds.Add(type.ID));
+
+                    var typeDetails = typeIds.Zip(typeNames, (I, N) => new { ID = I, Name = N });
+
+                    foreach (var type in typeDetails)
+                    {
+                        <option value="@type.ID">@type.Name</option>
+                    }
+                }
+            </select>
+
+            <input type="submit" formmethod="post" value="Search" class="btn btn-success" />
+            @*@Html.ActionLink("Search", "Index", "Home", null, new { FormMethod = "post" })*@
+            @Html.ActionLink("Clear", "Index", "Home", new { @class = "btn btn-danger" })
+        </p>
+    </form>
+
+    <table class="table">
+        <tr>@*Status of the books (Borrowed or not)*@</tr>
+        @{
+            var booklist = Model.Books;
+
+            <tr>
+                <th scope="col">@Html.DisplayName("#")</th>
+                <th scope="col">@Html.DisplayName("Book Name")</th>
+                <th scope="col">@Html.DisplayName("Author")</th>
+                <th scope="col">@Html.DisplayName("Type")</th>
+                <th scope="col">@Html.DisplayName("Pages")</th>
+                <th scope="col">@Html.DisplayName("Points")</th>
+                <th scope="col">@Html.DisplayName("Status")</th>
+            </tr>
+
+            foreach (var item in booklist)
+            {
+                <tr>
+                    <td>@Html.DisplayFor(modelItem => item.ID)</td>
+                    <td>@Html.DisplayFor(modelItem => item.Name)</td>
+                    <td>@Html.DisplayFor(modelItem => item.Author)</td>
+                    <td>@Html.DisplayFor(modelItem => item.Type)</td>
+                    <td>@Html.DisplayFor(modelItem => item.PageCount)</td>
+                    <td>@Html.DisplayFor(modelItem => item.Point)</td>
+                    <td id="status">@Html.DisplayFor(modelItem => item.Status)</td>
+
+                    <td>@Html.ActionLink("View", "BookDetails", new { id = item.ID }, new { @class = "btn btn-primary" })</td>
+                </tr>
+            }
+        }
+
+    </table>
+</div>
+
+<script type="text/javascript">
+    $(function () {
+        $("#status").each(function () {
+            if ($(this).text() == 'Out') {
+                $(this).css('color', 'red');
+            }
+            else {
+                $(this).css('color', 'green');
+            }
+        });
+    });
+</script>

@@ -1,0 +1,67 @@
+﻿@model u17004111_HW05.Models.ViewModels.StudentsVM
+<p>
+    <form method="post">
+        <input type="text" name="sname" />
+        <select name="cname">
+            <option value="0"></option>
+            @foreach (var classTemp in Model.Classes)
+            {
+                <option value="@classTemp">@classTemp</option>
+            }
+        </select>
+
+        <input type="submit" formmethod="post" value="Search" class="btn btn-success" />
+    </form>
+
+    @Html.ActionLink("Clear", "Students", new { id = Model.BookID }, new { @class = "btn btn-danger"})
+</p>
+
+
+<table class="table">
+    <tr>
+        <th scope="col">@Html.DisplayName("#")</th>
+        <th scope="col">@Html.DisplayName("Name")</th>
+        <th scope="col">@Html.DisplayName("Surname")</th>
+        <th scope="col">@Html.DisplayName("Class")</th>
+        <th scope="col">@Html.DisplayName("Points")</th>
+        <th scope="col">
+            @if (Model.CurrentBStud == null)
+            {
+                @Html.DisplayName("Borrow Book");
+            }
+            else
+            {
+                @Html.DisplayName("Return Book");
+            }
+        </th>
+    </tr>
+
+    @foreach (var stud in Model.Students)
+    {
+        <tr>
+            <td>@Html.DisplayFor(modelstud => stud.ID)</td>
+            <td>@Html.DisplayFor(modelstud => stud.Name)</td>
+            <td>@Html.DisplayFor(modelstud => stud.Surname)</td>
+            <td>@Html.DisplayFor(modelstud => stud.Class)</td>
+            <td>@Html.DisplayFor(modelstud => stud.Point)</td>
+
+            <td>
+                @if (Model.CurrentBStud == null)
+                {
+                    @Html.ActionLink("Borrow Book", "BorrowBook", new { studid = stud.ID, bookid = Model.BookID }, new { @class = "btn btn-primary"})
+                }
+                else
+                {
+                    if (Model.CurrentBStud.ID == stud.ID)
+                    {
+                        @Html.ActionLink("Return Book", "ReturnBook", new { id = stud.ID, bookid = Model.BookID }, new { @class = "btn btn-primary"})
+                    }
+                    else
+                    {
+
+                    }
+                }
+            </td>
+        </tr>
+    }
+</table>
